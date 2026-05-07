@@ -83,14 +83,10 @@ function renderStats(items) {
 }
 
 // ── Chart helpers ─────────────────────────────────────────────
-function renderChart(canvasId, type, labels, data, colors, onClickLabel) {
-    if (chartInstances.has(canvasId)) {
-        chartInstances.get(canvasId).destroy();
-    }
-    const ctx = document.getElementById(canvasId)?.getContext("2d");
-    if (!ctx) return;
+const chartConfigs = new Map(); // store config per canvasId for modal reuse
 
-    const chart = new Chart(ctx, {
+function buildChartConfig(type, labels, data, colors, onClickLabel) {
+    return {
         type,
         data: {
             labels,
@@ -100,12 +96,16 @@ function renderChart(canvasId, type, labels, data, colors, onClickLabel) {
             responsive: true,
             maintainAspectRatio: true,
             plugins: {
-                legend: { position: type === "doughnut" ? "right" : "none", labels: { font: { size: 11 }, padding: 10 } },
+                legend: {
+                    display: type === "doughnut",
+                    position: "right",
+                    labels: { font: { size: 12 }, padding: 12, usePointStyle: true }
+                },
                 tooltip: { callbacks: { label: ctx => ` ${ctx.parsed?.y ?? ctx.parsed}` } }
             },
             scales: type === "bar" ? {
-                x: { ticks: { font: { size: 10 } } },
-                y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 10 } } }
+                x: { ticks: { font: { size: 11 } } },
+                y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } } }
             } : undefined,
             onClick: onClickLabel ? (evt, elements) => {
                 if (!elements.length) return;
@@ -113,8 +113,18 @@ function renderChart(canvasId, type, labels, data, colors, onClickLabel) {
                 onClickLabel(label);
             } : undefined
         }
-    });
-    chartInstances.set(canvasId, chart);
+    };
+}
+
+function renderChart(canvasId, type, labels, data, colors, onClickLabel) {
+    if (chartInstances.has(canvasId)) {
+        chartInstances.get(canvasId).destroy();
+    }
+    const ctx = document.getElementById(canvasId)?.getContext("2d");
+    if (!ctx) return;
+    const config = buildChartConfig(type, labels, data, colors, onClickLabel);
+    chartConfigs.set(canvasId, { config, title: document.querySelector(`[data-chart="${canvasId}"] .chart-title`)?.textContent ?? "" });
+    chartInstances.set(canvasId, new Chart(ctx, config));
 }
 
 function countBy(items, key) {
@@ -294,6 +304,89 @@ document.addEventListener("DOMContentLoaded", () => {
     ["filterPurpose","filterDeployment","filterPII","filterFaculty"].forEach(id => {
         document.getElementById(id)?.addEventListener("change", renderDashboard);
     });
+
+    // ── Chart modal ───────────────────────────────────────────
+    let modalChart = null;
+    const modal     = document.getElementById("chartModal");
+    const modalCanvas = document.getElementById("modalCanvas");
+
+    function openModal(canvasId) {
+        const entry = chartConfigs.get(canvasId);
+        if (!entry) return;
+
+        document.getElementById("chartModalTitle").textContent = entry.title;
+
+        // Build a deeper clone of the config so the modal chart has its own callbacks
+        const srcConfig = entry.config;
+        const onClickLabel = srcConfig.options.onClick;
+
+        // Hint text
+        const isBar = srcConfig.type === "bar";
+        document.getElementById("chartModalHint").textContent =
+            isBar ? "Click a bar to apply filter, then close." : "Click a segment to apply filter, then close.";
+
+        const modalConfig = {
+            type: srcConfig.type,
+            data: JSON.parse(JSON.stringify(srcConfig.data)),
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: srcConfig.type === "doughnut",
+                        position: "right",
+                        labels: { font: { size: 14 }, padding: 18, usePointStyle: true }
+                    },
+                    tooltip: { callbacks: { label: ctx => ` ${ctx.parsed?.y ?? ctx.parsed}` } }
+                },
+                scales: isBar ? {
+                    x: { ticks: { font: { size: 13 } } },
+                    y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 13 } } }
+                } : undefined,
+                onClick: onClickLabel ? (evt, elements) => {
+                    if (!elements.length) return;
+                    const label = srcConfig.data.labels[elements[0].index];
+                    // find the filter target from the original onClickLabel binding
+                    onClickLabel(evt, elements);
+                    closeModal();
+                } : undefined
+            }
+        };
+
+        if (modalChart) { modalChart.destroy(); modalChart = null; }
+        // Reset canvas size
+        modalCanvas.style.width = "100%";
+        modalCanvas.style.height = "460px";
+        modalChart = new Chart(modalCanvas.getContext("2d"), modalConfig);
+
+        modal.style.display = "flex";
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeModal() {
+        modal.style.display = "none";
+        document.body.style.overflow = "";
+        if (modalChart) { modalChart.destroy(); modalChart = null; }
+    }
+
+    document.querySelectorAll(".chart-expand-btn").forEach(btn => {
+        btn.addEventListener("click", () => openModal(btn.dataset.chart));
+    });
+
+    // Also allow clicking the chart panel itself (not the canvas) to expand
+    document.querySelectorAll(".chart-panel").forEach(panel => {
+        panel.style.cursor = "pointer";
+        panel.addEventListener("click", e => {
+            // Don't trigger if the actual canvas was clicked (chart.js handles that)
+            if (e.target.tagName === "CANVAS") return;
+            if (e.target.closest(".chart-expand-btn")) return;
+            openModal(panel.dataset.chart);
+        });
+    });
+
+    document.getElementById("chartModalClose").addEventListener("click", closeModal);
+    document.querySelector(".chart-modal-backdrop").addEventListener("click", closeModal);
+    document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
     init();
 });

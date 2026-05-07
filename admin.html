@@ -167,36 +167,69 @@
     <!-- ===== Charts ===== -->
     <div class="charts-grid">
 
-      <div class="panel chart-panel">
-        <h2 class="chart-title">Purpose Breakdown</h2>
-        <p class="chart-hint">Click a segment to filter</p>
+      <div class="panel chart-panel" data-chart="purposeChart">
+        <div class="chart-panel-head">
+          <div>
+            <h2 class="chart-title">Purpose Breakdown</h2>
+            <p class="chart-hint">Click a segment to filter &middot; <span class="expand-hint">&#x26F6; expand</span></p>
+          </div>
+          <button class="chart-expand-btn" aria-label="Expand chart" data-chart="purposeChart">&#x26F6;</button>
+        </div>
         <canvas id="purposeChart"></canvas>
       </div>
 
-      <div class="panel chart-panel">
-        <h2 class="chart-title">Deployment Type</h2>
-        <p class="chart-hint">Click a segment to filter</p>
+      <div class="panel chart-panel" data-chart="deploymentChart">
+        <div class="chart-panel-head">
+          <div>
+            <h2 class="chart-title">Deployment Type</h2>
+            <p class="chart-hint">Click a segment to filter &middot; <span class="expand-hint">&#x26F6; expand</span></p>
+          </div>
+          <button class="chart-expand-btn" aria-label="Expand chart" data-chart="deploymentChart">&#x26F6;</button>
+        </div>
         <canvas id="deploymentChart"></canvas>
       </div>
 
-      <div class="panel chart-panel">
-        <h2 class="chart-title">PII Involvement</h2>
-        <p class="chart-hint">Click a segment to filter</p>
+      <div class="panel chart-panel" data-chart="piiChart">
+        <div class="chart-panel-head">
+          <div>
+            <h2 class="chart-title">PII Involvement</h2>
+            <p class="chart-hint">Click a segment to filter &middot; <span class="expand-hint">&#x26F6; expand</span></p>
+          </div>
+          <button class="chart-expand-btn" aria-label="Expand chart" data-chart="piiChart">&#x26F6;</button>
+        </div>
         <canvas id="piiChart"></canvas>
       </div>
 
-      <div class="panel chart-panel">
-        <h2 class="chart-title">Top AI Platforms</h2>
+      <div class="panel chart-panel" data-chart="platformChart">
+        <div class="chart-panel-head">
+          <div>
+            <h2 class="chart-title">Top AI Platforms</h2>
+            <p class="chart-hint">Click a bar to filter &middot; <span class="expand-hint">&#x26F6; expand</span></p>
+          </div>
+          <button class="chart-expand-btn" aria-label="Expand chart" data-chart="platformChart">&#x26F6;</button>
+        </div>
         <canvas id="platformChart"></canvas>
       </div>
 
-      <div class="panel chart-panel">
-        <h2 class="chart-title">Top AI Tools</h2>
+      <div class="panel chart-panel" data-chart="toolsChart">
+        <div class="chart-panel-head">
+          <div>
+            <h2 class="chart-title">Top AI Tools</h2>
+            <p class="chart-hint">Click a bar to filter &middot; <span class="expand-hint">&#x26F6; expand</span></p>
+          </div>
+          <button class="chart-expand-btn" aria-label="Expand chart" data-chart="toolsChart">&#x26F6;</button>
+        </div>
         <canvas id="toolsChart"></canvas>
       </div>
 
-      <div class="panel chart-panel">
-        <h2 class="chart-title">Submissions by Faculty / Dept</h2>
+      <div class="panel chart-panel" data-chart="facultyChart">
+        <div class="chart-panel-head">
+          <div>
+            <h2 class="chart-title">Submissions by Faculty / Dept</h2>
+            <p class="chart-hint">Click a bar to filter &middot; <span class="expand-hint">&#x26F6; expand</span></p>
+          </div>
+          <button class="chart-expand-btn" aria-label="Expand chart" data-chart="facultyChart">&#x26F6;</button>
+        </div>
         <canvas id="facultyChart"></canvas>
       </div>
 
@@ -237,6 +270,21 @@
   <footer class="admin-footer">
     &copy; 2026 HKU Information Technology Services. All rights reserved.
   </footer>
+
+  <!-- Chart Modal -->
+  <div id="chartModal" class="chart-modal" role="dialog" aria-modal="true" aria-label="Enlarged chart" style="display:none">
+    <div class="chart-modal-backdrop"></div>
+    <div class="chart-modal-box">
+      <div class="chart-modal-head">
+        <span class="chart-modal-title" id="chartModalTitle"></span>
+        <button class="chart-modal-close" id="chartModalClose" aria-label="Close">&times;</button>
+      </div>
+      <div class="chart-modal-hint" id="chartModalHint"></div>
+      <div class="chart-modal-body">
+        <canvas id="modalCanvas"></canvas>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="demo-data.js"></script>

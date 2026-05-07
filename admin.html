@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HKU ITS · AI Use Case Intake · Admin</title>
+  <link rel="stylesheet" href="admin-styles.css" />
+  <style>
+    #gate-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: #003d2b;
+      display: flex; align-items: center; justify-content: center;
+    }
+    #gate-overlay.hidden { display: none; }
+    .gate-box {
+      background: #fff;
+      border-radius: 12px;
+      padding: 40px 36px 32px;
+      width: 340px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+      text-align: center;
+    }
+    .gate-logo { height: 44px; margin-bottom: 24px; }
+    .gate-title { font-size: 1rem; font-weight: 700; color: #003d2b; margin-bottom: 6px; }
+    .gate-sub { font-size: 0.8rem; color: #767676; margin-bottom: 24px; }
+    .gate-input {
+      width: 100%; padding: 10px 14px; font-size: 1rem;
+      border: 2px solid #d0d5dd; border-radius: 6px;
+      text-align: center; letter-spacing: 0.15em;
+      outline: none; font-family: inherit;
+    }
+    .gate-input:focus { border-color: #003d2b; }
+    .gate-btn {
+      margin-top: 14px; width: 100%; padding: 11px;
+      background: #003d2b; color: #fff;
+      border: none; border-radius: 6px;
+      font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+    }
+    .gate-btn:hover { background: #00573d; }
+    .gate-error { margin-top: 10px; font-size: 0.82rem; color: #c0392b; min-height: 1.2em; }
+    .gate-accent { height: 4px; background: linear-gradient(90deg,#c9a013,#e8c040,#c9a013); border-radius: 12px 12px 0 0; margin: -40px -36px 32px; }
+  </style>
+</head>
+<body class="admin-body">
+
+  <!-- ===== Password Gate ===== -->
+  <div id="gate-overlay">
+    <div class="gate-box">
+      <div class="gate-accent"></div>
+      <img src="https://its.hku.hk/wp-content/uploads/its_logo_long-1.svg"
+           alt="HKU ITS" class="gate-logo" />
+      <div class="gate-title">AI Use Case Intake</div>
+      <div class="gate-sub">Admin Dashboard &mdash; Enter access PIN to continue</div>
+      <input id="gate-pin" class="gate-input" type="password"
+             placeholder="PIN" maxlength="20"
+             autocomplete="off" />
+      <button class="gate-btn" id="gate-submit">Enter</button>
+      <div class="gate-error" id="gate-error"></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      const CORRECT = "hku2026";
+      const KEY = "ai_intake_auth";
+      const overlay = document.getElementById("gate-overlay");
+      if (sessionStorage.getItem(KEY) === "1") { overlay.classList.add("hidden"); return; }
+      function tryPin() {
+        const val = document.getElementById("gate-pin").value;
+        if (val === CORRECT) {
+          sessionStorage.setItem(KEY, "1");
+          overlay.classList.add("hidden");
+        } else {
+          document.getElementById("gate-error").textContent = "Incorrect PIN. Please try again.";
+          document.getElementById("gate-pin").value = "";
+          document.getElementById("gate-pin").focus();
+        }
+      }
+      document.getElementById("gate-submit").addEventListener("click", tryPin);
+      document.getElementById("gate-pin").addEventListener("keydown", e => { if (e.key === "Enter") tryPin(); });
+    })();
+  </script>
+
+  <header class="masthead">
+    <div class="masthead-accent" aria-hidden="true"></div>
+    <div class="masthead-inner">
+      <div class="masthead-brand">
+        <img src="https://its.hku.hk/wp-content/uploads/its_logo_long-1.svg"
+             alt="HKU Information Technology Services" class="masthead-logo" />
+      </div>
+      <div class="masthead-title">AI Use Case Intake — Admin Dashboard</div>
+    </div>
+  </header>
+
+  <main class="admin-layout">
+
+    <!-- ===== Stat Cards ===== -->
+    <section class="stat-row" aria-label="Summary statistics">
+      <div class="stat-card">
+        <div class="stat-value" id="stat-total">—</div>
+        <div class="stat-label">Total Submissions</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-tl">—</div>
+        <div class="stat-label">Teaching &amp; Learning</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-research">—</div>
+        <div class="stat-label">Research</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-admin">—</div>
+        <div class="stat-label">Admin</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-cost">—</div>
+        <div class="stat-label">Total Est. Cost (HKD)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="stat-pii">—</div>
+        <div class="stat-label">Involves PII</div>
+      </div>
+    </section>
+
+    <!-- ===== Filters ===== -->
+    <section class="filters-panel panel" aria-label="Dashboard filters">
+      <div class="filters-row">
+        <div class="filter-group">
+          <label class="filter-label" for="filterPurpose">Purpose</label>
+          <select id="filterPurpose" class="filter-control">
+            <option value="__all__">All purposes</option>
+            <option value="Teaching &amp; Learning">Teaching &amp; Learning</option>
+            <option value="Research">Research</option>
+            <option value="Admin">Admin</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="filterDeployment">Deployment</label>
+          <select id="filterDeployment" class="filter-control">
+            <option value="__all__">All types</option>
+            <option value="Inhouse">Inhouse</option>
+            <option value="SaaS">SaaS</option>
+            <option value="Hybrid">Hybrid</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="filterPII">PII</label>
+          <select id="filterPII" class="filter-control">
+            <option value="__all__">All</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label class="filter-label" for="filterFaculty">Faculty / Dept</label>
+          <select id="filterFaculty" class="filter-control">
+            <option value="__all__">All</option>
+          </select>
+        </div>
+        <div class="filter-group filter-group--actions">
+          <button type="button" id="refreshBtn" class="admin-btn-refresh">Refresh</button>
+          <button type="button" id="clearFiltersBtn" class="admin-btn-clear" style="display:none">Clear filters</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Charts ===== -->
+    <div class="charts-grid">
+
+      <div class="panel chart-panel">
+        <h2 class="chart-title">Purpose Breakdown</h2>
+        <p class="chart-hint">Click a segment to filter</p>
+        <canvas id="purposeChart"></canvas>
+      </div>
+
+      <div class="panel chart-panel">
+        <h2 class="chart-title">Deployment Type</h2>
+        <p class="chart-hint">Click a segment to filter</p>
+        <canvas id="deploymentChart"></canvas>
+      </div>
+
+      <div class="panel chart-panel">
+        <h2 class="chart-title">PII Involvement</h2>
+        <p class="chart-hint">Click a segment to filter</p>
+        <canvas id="piiChart"></canvas>
+      </div>
+
+      <div class="panel chart-panel">
+        <h2 class="chart-title">Top AI Platforms</h2>
+        <canvas id="platformChart"></canvas>
+      </div>
+
+      <div class="panel chart-panel">
+        <h2 class="chart-title">Top AI Tools</h2>
+        <canvas id="toolsChart"></canvas>
+      </div>
+
+      <div class="panel chart-panel">
+        <h2 class="chart-title">Submissions by Faculty / Dept</h2>
+        <canvas id="facultyChart"></canvas>
+      </div>
+
+    </div>
+
+    <!-- ===== Submissions Table ===== -->
+    <section class="panel" aria-labelledby="table-heading">
+      <div class="panel-head">
+        <div class="panel-head-text">
+          <h2 id="table-heading" class="panel-title">All Submissions</h2>
+          <p class="panel-meta" id="tableCount">—</p>
+        </div>
+      </div>
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Project Name</th>
+              <th scope="col">Faculty / Dept</th>
+              <th scope="col">PIC</th>
+              <th scope="col">Purpose</th>
+              <th scope="col">Deployment</th>
+              <th scope="col">AI Platform</th>
+              <th scope="col" class="col-numeric">Cost (HKD)</th>
+              <th scope="col">PII</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr><td colspan="9" class="admin-table-msg">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="admin-footer">
+    &copy; 2026 HKU Information Technology Services. All rights reserved.
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="demo-data.js"></script>
+  <script src="admin-script.js"></script>
+</body>
+</html>

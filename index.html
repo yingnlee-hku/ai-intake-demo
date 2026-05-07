@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Use Case Intake Form — HKU ITS</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== Site Header ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="https://its.hku.hk" class="brand-link" target="_blank" rel="noopener noreferrer">
+        <img src="https://its.hku.hk/wp-content/uploads/its_logo_long-1.svg"
+             alt="HKU Information Technology Services" class="brand-logo" />
+      </a>
+    </div>
+  </header>
+
+  <!-- ===== Hero ===== -->
+  <div class="hero">
+    <div class="hero-inner">
+      <nav class="hero-breadcrumb" aria-label="Breadcrumb">
+        <span>HKU</span>
+        <span class="bc-sep">›</span>
+        <span>Information Technology Services</span>
+        <span class="bc-sep">›</span>
+        <span>AI Use Case Intake</span>
+      </nav>
+      <h1 class="hero-title">AI Use Case Intake Form</h1>
+      <p class="hero-sub">Log your AI project or use case for ITS review, governance, and support.</p>
+    </div>
+  </div>
+
+  <!-- ===== Main Form ===== -->
+  <main class="main-wrap">
+    <form id="intakeForm" novalidate>
+
+      <!-- Section 1: Requestor Information -->
+      <section class="form-section">
+        <h2 class="section-title">
+          <span class="section-num">1</span>
+          Requestor Information
+        </h2>
+        <div class="form-grid">
+
+          <div class="field-group">
+            <label class="field-label" for="faculty">Faculty / Department <span class="req">*</span></label>
+            <input type="text" id="faculty" class="field-input"
+                   placeholder="e.g. Faculty of Engineering, Registry" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="pic">Person in Charge (PIC) <span class="req">*</span></label>
+            <input type="text" id="pic" class="field-input"
+                   placeholder="Full name" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="email">Email <span class="req">*</span></label>
+            <input type="email" id="email" class="field-input"
+                   placeholder="yourname@hku.hk" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="projectName">Project Name <span class="req">*</span></label>
+            <input type="text" id="projectName" class="field-input"
+                   placeholder="Descriptive name for this AI use case" required />
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Section 2: Use Case Details -->
+      <section class="form-section">
+        <h2 class="section-title">
+          <span class="section-num">2</span>
+          Use Case Details
+        </h2>
+        <div class="form-grid">
+
+          <div class="field-group field-group--full">
+            <label class="field-label" for="businessCaseEditor">
+              AI Use Case / Business Case Description <span class="req">*</span>
+            </label>
+            <div id="businessCaseEditor" class="quill-editor"></div>
+            <input type="hidden" id="businessCase" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="purpose">Purpose <span class="req">*</span></label>
+            <select id="purpose" class="field-input" required>
+              <option value="">— Select purpose —</option>
+              <option value="Teaching &amp; Learning">Teaching &amp; Learning</option>
+              <option value="Research">Research</option>
+              <option value="Admin">Admin</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="targetAudience">Target Audience <span class="req">*</span></label>
+            <input type="text" id="targetAudience" class="field-input"
+                   placeholder="e.g. Students, Academic Staff, Admin Staff" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="projectDuration">Project Duration <span class="req">*</span></label>
+            <input type="text" id="projectDuration" class="field-input"
+                   placeholder="e.g. 6 months / Jan 2026 – Jun 2026" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="dateOfLog">Date of Log <span class="req">*</span></label>
+            <input type="date" id="dateOfLog" class="field-input" required />
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Section 3: AI Configuration -->
+      <section class="form-section">
+        <h2 class="section-title">
+          <span class="section-num">3</span>
+          AI Configuration
+        </h2>
+        <div class="form-grid">
+
+          <div class="field-group">
+            <label class="field-label" for="aiTools">AI Tools <span class="req">*</span></label>
+            <input type="text" id="aiTools" class="field-input"
+                   placeholder="e.g. ChatGPT, GitHub Copilot, Custom LLM" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="aiPlatform">AI Platform <span class="req">*</span></label>
+            <input type="text" id="aiPlatform" class="field-input"
+                   placeholder="e.g. Azure OpenAI, Google Vertex AI, On-premise" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="aiSubscriptionPlan">AI Subscription Plan</label>
+            <input type="text" id="aiSubscriptionPlan" class="field-input"
+                   placeholder="e.g. Enterprise, Team, Free tier" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="deploymentType">Inhouse / SaaS <span class="req">*</span></label>
+            <select id="deploymentType" class="field-input" required>
+              <option value="">— Select deployment type —</option>
+              <option value="Inhouse">Inhouse</option>
+              <option value="SaaS">SaaS</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="cost">Estimated Cost (HKD)</label>
+            <input type="number" id="cost" class="field-input"
+                   placeholder="0" min="0" step="1" />
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Section 4: Technical Details -->
+      <section class="form-section">
+        <h2 class="section-title">
+          <span class="section-num">4</span>
+          Technical Details
+        </h2>
+        <div class="form-grid">
+
+          <div class="field-group">
+            <label class="field-label" for="archServer">Architecture — Server <span class="req">*</span></label>
+            <input type="text" id="archServer" class="field-input"
+                   placeholder="e.g. On-premise server, Azure VM, HKU HPC" required />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="hardwareOwner">
+              Hardware Owner
+              <span class="field-optional">(Optional)</span>
+            </label>
+            <input type="text" id="hardwareOwner" class="field-input"
+                   placeholder="e.g. ITS, Faculty of Engineering, Vendor-managed" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="hpcType">ITS HPC / Cloud HPC</label>
+            <select id="hpcType" class="field-input">
+              <option value="">— Not applicable —</option>
+              <option value="ITS HPC">ITS HPC</option>
+              <option value="Cloud HPC">Cloud HPC</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="form-grid" style="margin-top:20px">
+
+          <div class="field-group">
+            <label class="field-label" for="connection">
+              Connection
+              <span class="req" id="req-connection">*</span>
+              <span class="field-optional" id="opt-connection" style="display:none">(Optional when Inhouse)</span>
+            </label>
+            <input type="text" id="connection" class="field-input" required
+                   placeholder="e.g. VPN, Internal LAN, Direct connect" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="vendor">
+              Vendor
+              <span class="req" id="req-vendor">*</span>
+              <span class="field-optional" id="opt-vendor" style="display:none">(Optional when SaaS)</span>
+            </label>
+            <input type="text" id="vendor" class="field-input" required
+                   placeholder="e.g. OpenAI, Microsoft, Google, Anthropic" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="model">
+              Model
+              <span class="req" id="req-model">*</span>
+              <span class="field-optional" id="opt-model" style="display:none">(Optional when SaaS)</span>
+            </label>
+            <input type="text" id="model" class="field-input" required
+                   placeholder="e.g. GPT-4o, Gemini 1.5 Pro, Claude 3.5 Sonnet" />
+          </div>
+
+        </div>
+
+      </section>
+
+      <!-- Section 5: Data & Compliance -->
+      <section class="form-section">
+        <h2 class="section-title">
+          <span class="section-num">5</span>
+          Data &amp; Compliance
+        </h2>
+        <div class="form-grid">
+
+          <div class="field-group">
+            <label class="field-label" for="pii">
+              Involves PII (Personally Identifiable Information)? <span class="req">*</span>
+            </label>
+            <select id="pii" class="field-input" required>
+              <option value="">— Select —</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+
+          <div class="field-group field-group--full">
+            <label class="field-label" for="typesOfData">Types of Data <span class="req">*</span></label>
+            <textarea id="typesOfData" class="field-input field-textarea" rows="3" required
+                      placeholder="Describe the data involved, e.g. student records, research datasets, anonymised survey responses"></textarea>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Error banner -->
+      <div id="formError" class="form-error" role="alert" aria-live="polite"></div>
+
+      <!-- Submit -->
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <span class="btn-text">Submit Intake Form</span>
+          <span class="btn-spinner" aria-hidden="true"></span>
+        </button>
+      </div>
+
+    </form>
+  </main>
+
+  <!-- ===== Success Overlay ===== -->
+  <div id="successOverlay" class="success-overlay" hidden>
+    <div class="success-card">
+      <div class="success-icon" aria-hidden="true">✓</div>
+      <h2 class="success-title">Intake Logged</h2>
+      <p class="success-body">
+        Your AI use case has been submitted successfully.<br />
+        ITS will review the details and follow up with you.
+      </p>
+      <button type="button" class="btn-submit" id="resetBtn">Submit another</button>
+    </div>
+  </div>
+
+  <!-- ===== Footer ===== -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span class="footer-brand">HKU Information Technology Services</span>
+      <span class="footer-sep">|</span>
+      <span class="footer-legal">&copy; 2026 The University of Hong Kong. All rights reserved.</span>
+    </div>
+  </footer>
+
+  <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

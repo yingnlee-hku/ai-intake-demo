@@ -101,7 +101,7 @@ function renderChart(canvasId, type, labels, data, colors, onClickLabel) {
             maintainAspectRatio: true,
             plugins: {
                 legend: { position: type === "doughnut" ? "right" : "none", labels: { font: { size: 11 }, padding: 10 } },
-                tooltip: { callbacks: { label: ctx => ` ${ctx.parsed}` } }
+                tooltip: { callbacks: { label: ctx => ` ${ctx.parsed?.y ?? ctx.parsed}` } }
             },
             scales: type === "bar" ? {
                 x: { ticks: { font: { size: 10 } } },
